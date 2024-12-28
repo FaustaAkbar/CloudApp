@@ -5,13 +5,10 @@ import os
 app = FastAPI()
 
 # Koneksi ke MongoDB
-client = MongoClient(os.getenv("MONGODB_URI"))
+client = MongoClient("mongodb+srv://faussss1357:realmajor@foodordercluster.uys7l.mongodb.net/test?retryWrites=true&w=majority&appName=FoodOrderCluster")
 db = client["CloudTugas15"]
 collection = db["User"]  # Mendefinisikan koleksi "User"
 
-@app.get("/favicon.ico")
-def favicon():
-    return None  # Return None to avoid 502 error
 
 @app.get("/")
 def read_root():
