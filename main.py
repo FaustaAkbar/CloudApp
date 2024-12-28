@@ -6,7 +6,8 @@ app = FastAPI()
 
 # Koneksi ke MongoDB
 client = MongoClient(os.getenv("MONGODB_URI"))
-db = client["CloudTugas15"]  # Tentukan nama database
+db = client["CloudTugas15"]
+collection = db["User"]  # Mendefinisikan koleksi "User"
 
 @app.get("/")
 def read_root():
@@ -15,7 +16,8 @@ def read_root():
 @app.post("/data")
 def save_data(item: dict):
     try:
-        db.collection.insert_one(item)
+        # Menggunakan collection yang sudah didefinisikan
+        collection.insert_one(item)
         return {"message": "Data saved!", "data": item}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving data: {e}")
@@ -23,7 +25,8 @@ def save_data(item: dict):
 @app.get("/data")
 def get_data():
     try:
-        data = list(db.collection.find({}, {"_id": 0}))
+        # Menggunakan collection yang sudah didefinisikan
+        data = list(collection.find({}, {"_id": 0}))
         return {"data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching data: {e}")
