@@ -1,11 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
+import os
 
 app = FastAPI()
 
 # Koneksi ke MongoDB
-client = MongoClient("mongodb+srv://faussss1357:realmajor@foodordercluster.uys7l.mongodb.net/test?retryWrites=true&w=majority&appName=FoodOrderCluster")
-db = client["CloudTugas15"]
+client = MongoClient(os.getenv("MONGODB_URI"))
+db = client["CloudTugas15"]  # Tentukan nama database
 
 @app.get("/")
 def read_root():
@@ -13,10 +14,16 @@ def read_root():
 
 @app.post("/data")
 def save_data(item: dict):
-    db.collection.insert_one(item)
-    return {"message": "Data saved!", "data": item}
+    try:
+        db.collection.insert_one(item)
+        return {"message": "Data saved!", "data": item}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving data: {e}")
 
 @app.get("/data")
 def get_data():
-    data = list(db.collection.find({}, {"_id": 0}))
-    return {"data": data}
+    try:
+        data = list(db.collection.find({}, {"_id": 0}))
+        return {"data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching data: {e}")
