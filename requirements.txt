@@ -1,3 +1,4 @@
 fastapi
 uvicorn
 pymongo
+python-dotenv  # Jika menggunakan .env untuk variabel lingkungan
